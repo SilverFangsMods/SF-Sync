@@ -45,6 +45,7 @@ export default {
       return new Response(privacyHtml(), { headers: { "content-type": "text/html; charset=utf-8", ...CORS } });
     }
     if (isGet && cp === "/logo.webp") return serveAsset(env, "logo.webp", "image/webp");
+    if (isGet && cp === "/applogo.webp") return serveAsset(env, "applogo.webp", "image/webp");
     if (isGet && cp === "/manual.pdf") return serveAsset(env, "Manual_SF-Sync.pdf", "application/pdf");
     if (isGet && cp === "/download") {
       return serveAsset(env, "SF-Sync-latest.msi", "application/x-msdownload", "SF-Sync.msi");

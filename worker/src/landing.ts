@@ -222,6 +222,7 @@ export function landingHtml(): string {
     padding:56px 0 48px;text-align:center;
   }
   .hero img.logo{height:64px;width:auto;display:block;margin:0 auto 18px}
+  .hero img.applogo{height:160px;width:auto;display:block;margin:0 auto 14px}
   .hero h1{font-size:2.3rem;margin:.1em 0 .15em;letter-spacing:.5px}
   .hero .tag{color:var(--muted);font-size:1.06rem;max-width:560px;margin:0 auto 26px}
   .cta{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#fff;
@@ -277,8 +278,7 @@ export function landingHtml(): string {
 
 <header class="hero">
   <div class="wrap">
-    <a href="https://silverfangs.com" title="Silver Fangs"><img class="logo" src="/logo.webp?v=3" alt="Silver Fangs" /></a>
-    <h1>SF-Sync</h1>
+    <img class="applogo" src="/applogo.webp" alt="SF-Sync" />
     <p class="tag">Mantenha suas pastas iguais em todos os seus computadores, de forma automatica e segura.</p>
     <a class="cta" href="/download"><span class="ic">&#11015;</span> Baixar para Windows</a>
     <div class="meta">Versao ${VERSION} &middot; instalador assinado (.msi) &middot; <a href="/manual.pdf">Manual em PDF</a></div>
