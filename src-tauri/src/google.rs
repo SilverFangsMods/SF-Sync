@@ -94,8 +94,8 @@ pub fn google_login() -> Result<GoogleAuth, String> {
         st = state,
     );
 
-    std::process::Command::new("cmd")
-        .args(["/C", "start", "", &auth_url])
+    std::process::Command::new("rundll32.exe")
+        .args(["url.dll,FileProtocolHandler", &auth_url])
         .spawn()
         .map_err(|e| format!("nao abriu o navegador: {e}"))?;
 

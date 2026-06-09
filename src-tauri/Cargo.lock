@@ -3417,7 +3417,7 @@ dependencies = [
 
 [[package]]
 name = "sf-sync"
-version = "0.1.16"
+version = "0.1.17"
 dependencies = [
  "anyhow",
  "getrandom 0.2.17",
