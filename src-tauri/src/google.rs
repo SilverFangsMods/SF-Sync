@@ -120,7 +120,7 @@ pub fn google_login() -> Result<GoogleAuth, String> {
 
                 if query_get(query, "code").is_none() && query_get(query, "error").is_none() {
                     let _ = write_page(&mut stream, "Aguardando o Google...");
-                    if start.elapsed() > Duration::from_secs(300) {
+                    if start.elapsed() > Duration::from_secs(120) {
                         return Err("tempo esgotado".into());
                     }
                     continue;
@@ -146,8 +146,8 @@ pub fn google_login() -> Result<GoogleAuth, String> {
                 });
             }
             Err(ref e) if e.kind() == std::io::ErrorKind::WouldBlock => {
-                if start.elapsed() > Duration::from_secs(300) {
-                    return Err("tempo esgotado (5 min) — tente de novo".into());
+                if start.elapsed() > Duration::from_secs(120) {
+                    return Err("tempo esgotado (2 min) — tente de novo".into());
                 }
                 std::thread::sleep(Duration::from_millis(150));
             }

@@ -84,15 +84,33 @@ $("a-continue").addEventListener("click", async () => {
   else { show("a-email-step", true); setMsg("a-msg", "Este e-mail não tem convite. Peça um convite ao dono."); }
 });
 
+let googleAttempt = 0;
 $("a-google").addEventListener("click", async () => {
-  setMsg("a-msg", "abrindo o Google no navegador - conclua por la e volte…");
+  const mine = ++googleAttempt;
+  const btn = $<HTMLButtonElement>("a-google");
+  btn.disabled = true;
+  show("a-google-cancel-wrap", true);
+  setMsg("a-msg", "Abrindo o Google no navegador. Conclua por la e volte. Se travar, clique em cancelar.");
   try {
     const g = await invoke<{ code: string; code_verifier: string; redirect_uri: string }>("google_login");
+    if (mine !== googleAttempt) return; // cancelado
     const r = await api("/auth/google", g);
-    if (!r.ok) return setMsg("a-msg", r.error || "falha no login Google");
+    if (mine !== googleAttempt) return;
+    if (!r.ok) { setMsg("a-msg", r.error || "Login Google nao concluido. Tente de novo ou use e-mail e senha."); return; }
     pending.email = r.email || pending.email;
     await doPair(r.token);
-  } catch (e) { setMsg("a-msg", `Google: ${e}`); }
+  } catch (e) {
+    if (mine !== googleAttempt) return;
+    setMsg("a-msg", `Login Google nao concluido. Tente de novo ou entre com e-mail e senha. (${e})`);
+  } finally {
+    if (mine === googleAttempt) { btn.disabled = false; show("a-google-cancel-wrap", false); }
+  }
+});
+$("a-google-cancel").addEventListener("click", () => {
+  googleAttempt++; // invalida o resultado pendente
+  $<HTMLButtonElement>("a-google").disabled = false;
+  show("a-google-cancel-wrap", false);
+  setMsg("a-msg", "Login Google cancelado.");
 });
 
 $("a-do-login").addEventListener("click", async () => {

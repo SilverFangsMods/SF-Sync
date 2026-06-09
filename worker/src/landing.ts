@@ -1,4 +1,4 @@
-const VERSION = "0.1.17";
+const VERSION = "0.1.18";
 
 const PAGE_HEAD = `<meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
