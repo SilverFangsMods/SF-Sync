@@ -505,7 +505,7 @@ export function landingHtml(): string {
 <footer>
   <div class="wrap">
     <a href="https://silverfangs.com"><img src="/logo.webp?v=3" alt="Silver Fangs" /></a>
-    <div class="copy">&copy; Silver Fangs &middot; SF-Sync ${VERSION}</div>
+    <div class="copy">&copy; Silver Fangs &middot; SF-Sync ${VERSION} &middot; assinatura de codigo por <a href="https://signpath.org">SignPath Foundation</a></div>
     <div class="links">
       <a href="https://silverfangs.com">Pagina principal</a>
       <a href="/manual.pdf">Manual (PDF)</a>
