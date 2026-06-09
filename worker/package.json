@@ -2,7 +2,7 @@
   "name": "sf-sync-lock",
   "private": true,
   "version": "0.1.0",
-  "description": "Autoridade de lock read-only distribuido do SF-Sync (Durable Object)",
+  "description": "SF-Sync worker (API e lock)",
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy"
