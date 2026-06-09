@@ -1,0 +1,30 @@
+name = "sf-sync-lock"
+main = "src/index.ts"
+compatibility_date = "2025-01-01"
+
+# account_id definido via variavel de ambiente CLOUDFLARE_ACCOUNT_ID no deploy
+
+[[durable_objects.bindings]]
+name = "LOCKS"
+class_name = "LockRegistry"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["LockRegistry"]
+
+[[kv_namespaces]]
+binding = "CLIENTS"
+id = "741eaf9334d74a12819694d0b7c83765"
+
+[[kv_namespaces]]
+binding = "CONFIG"
+id = "5a1ab8bf153c4c4595f440231056cab2"
+
+[[d1_databases]]
+binding = "CTRL"
+database_name = "sf-sync-control"
+database_id = "19e04e8a-8f93-407f-9aea-f5da674c7dc0"
+
+[[r2_buckets]]
+binding = "DIST"
+bucket_name = "sf-sync-dist"

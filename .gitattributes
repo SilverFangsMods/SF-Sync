@@ -1,0 +1,13 @@
+# Normalizacao de fim de linha.
+# Padrao: deixa o git decidir texto vs binario.
+* text=auto
+
+# CRITICO: estes precisam de LF mesmo no Windows.
+# CRLF quebraria o bash (\r) e poderia virar parte dos padroes do filtro rclone.
+*.sh        text eol=lf
+*.filter    text eol=lf
+
+# Binários: nunca normalizar (corromperia o cert DER).
+*.cer       binary
+*.msi       binary
+*.ico       binary

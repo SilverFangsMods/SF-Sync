@@ -1,0 +1,58 @@
+# Rust / Tauri
+/target
+/src-tauri/target
+**/*.rs.bk
+
+# Node / frontend
+node_modules/
+dist/
+.vite/
+
+# Worker (Cloudflare)
+.wrangler/
+.dev.vars
+
+# Segredos — NUNCA versionar
+.env
+.env.*
+*.key
+*.pem
+secrets.*
+rclone.conf
+.secrets/
+
+# OS / editores
+Thumbs.db
+.DS_Store
+*.log
+*.tmp
+
+# Indice regeneravel do KARP
+.karp-inspector/
+
+# rclone embutido no bundle (baixado via scripts/fetch-rclone.ps1; nao versionar 75MB)
+src-tauri/resources/rclone.exe
+
+# pacote de distribuicao assistida (o .msi e grande; scripts/cert versionados)
+dist-cert/*.msi
+
+# memoria de praxis (interna; nunca no repo publico)
+.history/
+
+# --- internos: nunca no repo publico (mantidos so no disco local) ---
+/mockups/
+/filters/
+/Product_Id_13
+/dist-cert/
+/docs/ARQUITETURA.md
+/docs/MULTIUSER_DESIGN.md
+/docs/PLANO.md
+/docs/PLANO_EXECUCAO.md
+/scripts/gate-check.sh
+/scripts/sync.sh
+/scripts/trust-cert.ps1
+/.claude/
+/LogoSync1.png
+/cert/
+worker/_preview.png
+worker/assets_logo.webp

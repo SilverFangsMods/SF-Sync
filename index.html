@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SF-Sync</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <!-- ============ AUTH (não pareado) ============ -->
+    <div class="auth hidden" id="auth">
+      <div class="authcard">
+        <div class="logo"><div class="mk">🔄</div> SF-Sync</div>
+
+        <div id="a-email-step">
+          <h2 id="a-title">Conectar este dispositivo</h2>
+          <p class="q">Entre na sua conta SF-Sync.</p>
+          <label>E-mail</label>
+          <input id="a-email" type="email" placeholder="voce@exemplo.com" autocomplete="username" />
+          <button class="btn full" id="a-continue">Continuar</button>
+          <div class="or">ou</div>
+          <button class="btn full ghost" id="a-google">Entrar com Google</button>
+        </div>
+
+        <div id="a-login" class="step hidden">
+          <label>Senha</label>
+          <input id="a-pass" type="password" autocomplete="current-password" />
+          <label>Código 2FA</label>
+          <input id="a-code" inputmode="numeric" placeholder="000000" />
+          <button class="btn full" id="a-do-login">Entrar e parear</button>
+          <p class="center small" style="margin-top:12px"><span class="link" id="a-forgot-link">esqueci a senha</span> · <span class="link" id="a-lost-link">perdi o autenticador</span></p>
+        </div>
+
+        <div id="a-register" class="step hidden">
+          <label>Nome</label>
+          <input id="a-name" placeholder="Seu nome" />
+          <label>Senha (mín. 8)</label>
+          <input id="a-rpass" type="password" autocomplete="new-password" />
+          <label>Código do convite <span class="muted">(vazio se for o 1º dono)</span></label>
+          <input id="a-invite" placeholder="ABC123" />
+          <button class="btn full" id="a-do-register">Criar conta</button>
+        </div>
+
+        <div id="a-totp" class="step hidden">
+          <p class="q">Leia o QR no Google Authenticator (ou similar):</p>
+          <img id="a-qr" alt="QR do 2FA" style="display:block;margin:6px auto;width:180px;height:180px;background:#fff;border-radius:10px;padding:6px" />
+          <a id="a-uri" class="otpauth center" href="#">ou abrir no autenticador</a>
+          <p class="muted center">ou digite o segredo:</p>
+          <code id="a-secret" class="secret"></code>
+          <label>Código gerado</label>
+          <input id="a-totp-code" inputmode="numeric" placeholder="000000" />
+          <button class="btn full" id="a-do-totp">Confirmar 2FA</button>
+        </div>
+
+        <div id="a-codes" class="step hidden">
+          <p class="q">Guarde estes <b>códigos de recuperação</b> num lugar seguro. Cada um entra <b>uma vez</b> se você perder o autenticador.</p>
+          <pre id="a-codes-list" class="secret" style="text-align:left;white-space:pre-wrap;line-height:1.7"></pre>
+          <button class="btn full" id="a-codes-ok">Guardei - continuar</button>
+        </div>
+
+        <div id="a-recover" class="step hidden">
+          <p class="q">Perdeu o autenticador? Entre com a senha e um código de recuperação para recadastrar o 2FA.</p>
+          <label>Senha</label>
+          <input id="a-rec-pass" type="password" autocomplete="current-password" />
+          <label>Código de recuperação</label>
+          <input id="a-rec-code" placeholder="XXXX-XXXX" />
+          <button class="btn full" id="a-do-recover">Recuperar e recadastrar 2FA</button>
+        </div>
+
+        <div id="a-forgot" class="step hidden">
+          <p class="q">Redefinir senha com o código do autenticador.</p>
+          <label>Código 2FA</label>
+          <input id="a-fcode" inputmode="numeric" placeholder="000000" />
+          <label>Nova senha (mín. 8)</label>
+          <input id="a-fpass" type="password" autocomplete="new-password" />
+          <button class="btn full" id="a-do-forgot">Redefinir e entrar</button>
+        </div>
+
+        <p class="msg center" id="a-msg"></p>
+        <label class="small" style="margin-top:10px">Nome deste dispositivo</label>
+        <input id="a-devname" placeholder="Meu PC" value="Meu PC" />
+      </div>
+    </div>
+
+    <!-- ============ APP (pareado) ============ -->
+    <div class="app hidden" id="app">
+      <aside class="side">
+        <div class="logo"><div class="mk">🔄</div> SF-Sync</div>
+        <div class="nav on" data-nav="spaces"><span class="ic">🗂️</span> Espaços</div>
+        <div class="nav" data-nav="connections"><span class="ic">🔌</span> Conexões</div>
+        <div class="nav" data-nav="devices"><span class="ic">💻</span> Dispositivos</div>
+        <div class="nav" data-nav="invites"><span class="ic">✉️</span> Convites <span class="badge hidden" id="inv-badge">0</span></div>
+        <div class="nav" data-nav="convidar"><span class="ic">🔗</span> Convidar</div>
+        <div class="nav" data-nav="settings"><span class="ic">⚙️</span> Ajustes</div>
+        <div class="nav" data-nav="help"><span class="ic">❓</span> Ajuda</div>
+        <div class="dev"><span>este dispositivo</span><b id="dev-name">-</b><span id="dev-sub" class="small"></span></div>
+      </aside>
+
+      <main class="main">
+        <!-- ESPAÇOS -->
+        <section id="view-spaces">
+          <div class="head"><h1>Espaços de sync</h1><button class="btn" id="new-sync">＋ Novo sync</button></div>
+          <p class="sub">Cada espaço sincroniza pastas entre dispositivos - seus ou de outras pessoas. O caminho local é por dispositivo.</p>
+          <div class="statusbar"><span id="state">…</span><span id="last"></span><button class="btn ghost sm" id="sync-now">Sincronizar agora</button></div>
+          <div class="locks" id="locks"></div>
+          <ul class="conflicts hidden" id="conflicts"></ul>
+          <div class="grid" id="grid"></div>
+        </section>
+
+        <!-- CONEXÕES -->
+        <section id="view-connections" class="hidden">
+          <div class="head"><h1>Conexões</h1></div>
+          <p class="sub">Conecte uma vez; os espaços reutilizam. Suas credenciais ficam só neste dispositivo.</p>
+          <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+            <button class="btn sm" id="conn-add-gdrive">＋ Conectar Google Drive</button>
+            <button class="btn ghost sm" id="conn-add-nas">＋ Adicionar NAS / Pasta</button>
+          </div>
+          <p class="msg" id="conn-msg"></p>
+          <div id="conn-list"></div>
+        </section>
+
+        <!-- DISPOSITIVOS -->
+        <section id="view-devices" class="hidden">
+          <div class="head"><h1>Dispositivos</h1></div>
+          <p class="sub">Os aparelhos conectados à sua conta.</p>
+          <div id="dev-list"></div>
+        </section>
+
+        <!-- CONVITES -->
+        <section id="view-invites" class="hidden">
+          <div class="head"><h1>Convites pendentes</h1></div>
+          <p class="sub">Alguém quer compartilhar um espaço com você. Ao aceitar, você escolhe onde sincronizar neste PC.</p>
+          <div id="inv-list"></div>
+        </section>
+
+        <!-- CONVIDAR (link de convite) -->
+        <section id="view-convidar" class="hidden">
+          <div class="head"><h1>Convidar pessoas</h1></div>
+          <p class="sub">Gere um link e envie por onde quiser (WhatsApp, e-mail...). Quem abrir libera o proprio acesso pelo e-mail e baixa o app. Sem voce repassar codigos.</p>
+          <label>Validade do link</label>
+          <select id="il-days">
+            <option value="1">1 dia</option>
+            <option value="7" selected>7 dias</option>
+            <option value="30">30 dias</option>
+            <option value="0">Sem validade</option>
+          </select>
+          <label>Quantas pessoas podem usar</label>
+          <select id="il-uses">
+            <option value="1" selected>1 pessoa</option>
+            <option value="5">5 pessoas</option>
+            <option value="10">10 pessoas</option>
+            <option value="100">Ate 100</option>
+          </select>
+          <button class="btn" id="il-gen" style="margin-top:14px">Gerar link de convite</button>
+          <p class="msg" id="il-msg"></p>
+          <div id="il-out" class="hidden" style="margin-top:14px">
+            <label>Link gerado (envie para a pessoa)</label>
+            <div style="display:flex;gap:8px;align-items:center">
+              <input id="il-url" readonly style="flex:1" />
+              <button class="btn sm" id="il-copy">Copiar</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- AJUSTES -->
+        <section id="view-settings" class="hidden">
+          <div class="head"><h1>Ajustes</h1></div>
+          <h2>Trocar senha</h2>
+          <p class="sub small">Confirme com o código do autenticador.</p>
+          <label>Código 2FA</label><input id="s-code" inputmode="numeric" placeholder="000000" />
+          <label>Nova senha</label><input id="s-pass" type="password" />
+          <button class="btn sm" id="s-change">Salvar nova senha</button>
+          <p class="msg" id="s-msg"></p>
+          <h2>Códigos de recuperação</h2>
+          <p class="sub small">Gere novos (invalida os antigos). Confirme com o autenticador.</p>
+          <label>Código 2FA</label><input id="rc-code" inputmode="numeric" placeholder="000000" />
+          <button class="btn ghost sm" id="rc-gen">Gerar novos códigos</button>
+          <pre id="rc-out" class="secret hidden" style="text-align:left;white-space:pre-wrap;line-height:1.7"></pre>
+          <p class="msg" id="rc-msg"></p>
+          <h2>Sessão</h2>
+          <button class="btn danger sm" id="s-logout">Desconectar este dispositivo</button>
+        </section>
+
+        <!-- AJUDA (manual embutido) -->
+        <section id="view-help" class="hidden">
+          <div class="head"><h1>Ajuda</h1></div>
+          <p class="sub">Manual de uso do SF-Sync. Tudo o que voce precisa para instalar, conectar e sincronizar.</p>
+          <div class="doc">
+            <h2>1. O que e o SF-Sync</h2>
+            <p>O SF-Sync mantem as <b>mesmas pastas iguais em varios computadores</b>. Voce edita um arquivo no trabalho e, pouco depois, ele aparece atualizado em casa - sem pen drive, sem anexo de e-mail. Ele tambem deixa voce <b>compartilhar pastas</b> com outras pessoas, de forma sincronizada e segura.</p>
+            <p>O programa fica discreto, rodando perto do relogio (a area de notificacao do Windows), e trabalha sozinho em segundo plano.</p>
+
+            <h2>2. Antes de comecar</h2>
+            <ul>
+              <li>Um computador com <b>Windows</b> e um <b>e-mail</b> valido.</li>
+              <li>Um <b>aplicativo autenticador</b> no celular (Google Authenticator, Microsoft Authenticator ou similar). Ele gera um codigo de seis numeros que serve como segunda chave da sua conta - a <i>verificacao em duas etapas</i>.</li>
+              <li>Se for usar <b>Google Drive</b>, tenha sua conta Google a mao.</li>
+            </ul>
+
+            <h2>3. Instalando no Windows</h2>
+            <ol>
+              <li>Abra o arquivo de instalacao (nome parecido com <code>SF-Sync_..._x64.msi</code>) com dois cliques.</li>
+              <li>Se o Windows perguntar, confirme - o instalador e <b>assinado digitalmente pela Silver Fangs</b>.</li>
+              <li>Avance ate o fim e clique em <b>Concluir</b>.</li>
+            </ol>
+            <p>O SF-Sync passa a iniciar junto com o Windows. Abrir o atalho na area de trabalho apenas abre a janela - nunca havera duas copias abertas ao mesmo tempo.</p>
+
+            <h2>4. Criando sua conta</h2>
+            <p>Na tela <b>"Conectar este dispositivo"</b>:</p>
+            <ol>
+              <li>Digite seu <b>e-mail</b> e clique em <b>Continuar</b>.</li>
+              <li>Preencha <b>Nome</b>, <b>Senha</b> (min. 8) e o <b>Codigo do convite</b> (deixe vazio se voce e o primeiro dono). Clique em <b>Criar conta</b>.</li>
+              <li>Aponte o app autenticador para o <b>QR Code</b> da tela, digite o codigo de seis numeros e clique em <b>Confirmar 2FA</b>.</li>
+              <li><b>Guarde os codigos de recuperacao</b> em lugar seguro (cada um vale uma vez, caso perca o celular) e clique em <b>Guardei - continuar</b>.</li>
+            </ol>
+            <p>Confira tambem o campo <b>"Nome deste dispositivo"</b> para reconhecer cada aparelho depois.</p>
+
+            <h2>5. Entrar com Google (atalho)</h2>
+            <p>Na tela inicial, o botao <b>"Entrar com Google"</b> abre o navegador para voce escolher sua conta. Ao autorizar, volte ao SF-Sync - ele conecta automaticamente.</p>
+
+            <h2>6. Conectando outro computador</h2>
+            <p>Instale o programa no outro PC, digite o <b>mesmo e-mail</b>, informe <b>senha</b> e <b>codigo 2FA</b> e clique em <b>Entrar e parear</b>. O aparelho passa a fazer parte da sua conta.</p>
+
+            <h2>7. A tela principal</h2>
+            <ul>
+              <li>&#128451; <b>Espacos</b> - suas pastas sincronizadas (onde voce passa a maior parte do tempo).</li>
+              <li>&#128268; <b>Conexoes</b> - onde voce liga o Google Drive ou um NAS, uma vez so.</li>
+              <li>&#128187; <b>Dispositivos</b> - os computadores conectados a sua conta.</li>
+              <li>&#9993; <b>Convites</b> - pastas que outras pessoas quiseram compartilhar com voce.</li>
+              <li>&#9881; <b>Ajustes</b> - senha, codigos de recuperacao e sair.</li>
+            </ul>
+            <p>Na tela de Espacos, a barra de cima mostra o estado (sincronizando, em dia, pausado) e tem o botao <b>"Sincronizar agora"</b>.</p>
+
+            <h2>8. Conexoes: ligar uma vez, usar sempre</h2>
+            <p>Antes de criar um espaco, defina <b>onde</b> os arquivos ficam guardados, na secao <b>Conexoes</b>:</p>
+            <ul>
+              <li><b>&#43; Conectar Google Drive</b> - abre o navegador para autorizar sua conta Google.</li>
+              <li><b>&#43; Adicionar NAS / Pasta</b> - usa um disco de rede ou uma pasta como destino.</li>
+            </ul>
+            <p>Suas credenciais ficam <b>apenas neste computador</b>, protegidas. Voce liga a conexao uma vez e todos os espacos a reaproveitam.</p>
+
+            <h2>9. Criando um espaco</h2>
+            <p>Clique em <b>&#43; Novo sync</b> e siga o assistente: <b>para quem e</b> (so seu ou compartilhado), <b>conexao</b>, <b>nome</b>, <b>onde fica neste computador</b> e <b>quais pastas</b>. Por seguranca, o espaco comeca <b>pausado</b> ate voce conferir e ativar.</p>
+
+            <h2>10. Como a sincronizacao funciona</h2>
+            <ol>
+              <li><b>Primeiro ele baixa</b> o que ja existe na nuvem - voce nunca perde nada sem querer.</li>
+              <li><b>Confira a previa</b> do que vai acontecer.</li>
+              <li><b>Ative o espaco</b>: dai em diante roda sozinho (envia o que voce muda, baixa o que mudou na nuvem).</li>
+            </ol>
+            <p>Se uma sincronizacao fosse apagar muitos arquivos de uma vez, o programa <b>segura e pede sua confirmacao</b>. E, se duas pessoas editarem o mesmo arquivo, as duas versoes sao guardadas e voce e avisado.</p>
+
+            <h2>11. Compartilhando uma pasta</h2>
+            <p>Ao criar/abrir um espaco compartilhado, indique o <b>e-mail da pessoa</b>. Ela recebe um <b>convite</b> e escolhe onde guardar no computador dela.</p>
+            <p>Quando o espaco usa <b>Google Drive</b>, ha um passo a mais, feito por voce uma unica vez: no site do Google Drive, <b>compartilhe a pasta</b> com o e-mail da pessoa e cole o <b>identificador da pasta</b> no campo indicado. Isso existe de proposito - o app nao mexe sozinho no seu Drive; o controle e seu. Em espacos por NAS ou no espaco interno da Silver Fangs, esse passo nao existe.</p>
+
+            <h2>12. Recebendo um compartilhamento</h2>
+            <p>Abra <b>&#9993; Convites</b> (um numero aparece quando ha novidades), aceite o espaco e escolha <b>onde</b> ele fica no seu computador. Dai funciona como qualquer espaco seu.</p>
+
+            <h2>13. Seus dispositivos</h2>
+            <p>Em <b>&#128187; Dispositivos</b> voce ve e pode <b>remover</b> computadores conectados (ex.: um aparelho vendido perde o acesso). Vale revisar essa lista de vez em quando.</p>
+
+            <h2>14. Conta e seguranca</h2>
+            <ul>
+              <li><b>Trocar a senha:</b> em Ajustes, com o codigo 2FA e a nova senha.</li>
+              <li><b>Esqueci a senha:</b> na tela de entrada, clique em "esqueci a senha" e redefina com o codigo do autenticador.</li>
+              <li><b>Perdi o autenticador:</b> clique em "perdi o autenticador" e entre com a senha + um codigo de recuperacao; depois recadastre o 2FA em um novo celular.</li>
+              <li><b>Novos codigos de recuperacao:</b> em Ajustes, com o codigo do autenticador (os antigos deixam de valer).</li>
+            </ul>
+
+            <h2>15. O icone perto do relogio</h2>
+            <p>Clique no icone na area de notificacao para abrir a janela. Fechar a janela <b>nao encerra</b> o programa - ele continua sincronizando. E ele inicia junto com o Windows.</p>
+
+            <h2>16. Suas informacoes estao protegidas</h2>
+            <ul>
+              <li><b>Verificacao em duas etapas</b> alem da senha.</li>
+              <li><b>Criptografia</b> do conteudo sincronizado.</li>
+              <li><b>Credenciais so no seu aparelho</b>, guardadas de forma protegida.</li>
+              <li><b>Pastas sensiveis nunca sao copiadas</b> (senhas/segredos e dados internos de controle de versao) - protecao automatica.</li>
+            </ul>
+
+            <h2>17. Perguntas frequentes</h2>
+            <p><b>Preciso deixar o programa aberto?</b> Nao - ele roda sozinho e inicia com o Windows.</p>
+            <p><b>Cheguei em outro computador. Ele apaga o que tenho la?</b> Nao - baixa primeiro e mostra uma previa antes de mexer.</p>
+            <p><b>E se duas pessoas editarem o mesmo arquivo?</b> As duas versoes sao guardadas e voce e avisado.</p>
+            <p><b>Perdi o celular do autenticador.</b> Use "perdi o autenticador" com a senha e um codigo de recuperacao.</p>
+            <p><b>Posso usar Google Drive e NAS juntos?</b> Pode - cada espaco usa a conexao que voce escolher.</p>
+
+            <h2>Glossario rapido</h2>
+            <ul>
+              <li><b>Espaco:</b> pasta(s) que o SF-Sync mantem sincronizada.</li>
+              <li><b>Conexao:</b> o destino dos arquivos (Google Drive, NAS). Liga-se uma vez.</li>
+              <li><b>Dispositivo:</b> cada computador conectado a sua conta.</li>
+              <li><b>2FA:</b> a camada extra de seguranca, com o codigo do autenticador.</li>
+              <li><b>Codigos de recuperacao:</b> chaves reservas, de uso unico.</li>
+              <li><b>Convite:</b> o pedido para participar de um espaco compartilhado.</li>
+            </ul>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- ============ WIZARD ============ -->
+    <div class="modal" id="modal"><div class="wiz" id="wiz"></div></div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

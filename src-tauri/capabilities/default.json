@@ -1,0 +1,9 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Capability da janela principal (oculta) e do tray",
+  "windows": ["main"],
+  "permissions": [
+    "core:default"
+  ]
+}

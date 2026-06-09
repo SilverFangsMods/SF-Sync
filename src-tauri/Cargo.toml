@@ -1,0 +1,31 @@
+[package]
+name = "sf-sync"
+version = "0.1.16"
+description = "Sincronizador de pastas multi-inquilino — app de bandeja com rclone bisync e backend serverless."
+authors = ["Marcelo Maranhas (Silver Fangs)"]
+edition = "2021"
+license = "MIT"
+
+[lib]
+name = "sf_sync_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon"] }
+tauri-plugin-autostart = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-single-instance = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+anyhow = "1"
+thiserror = "2"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+notify = "6"
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json", "blocking"] }
+windows = { version = "0.58", features = ["Win32_System_JobObjects", "Win32_Foundation", "Win32_Security", "Win32_Security_Cryptography", "Win32_System_SystemServices", "Win32_System_Threading"] }
+getrandom = "0.2"
