@@ -56,3 +56,10 @@ dist-cert/*.msi
 /cert/
 worker/_preview.png
 worker/assets_logo.webp
+
+# empacotamento MSIX (staging local)
+/msix-build/
+*.msix
+
+# specs internas de design (nao publicar)
+/docs/SPEC_*.md

@@ -132,56 +132,56 @@ export function privacyHtml(): string {
 <header><div class="wrap">
   <a href="https://silverfangs.com"><img src="/logo.webp?v=3" alt="Silver Fangs" /></a>
   <h1>Politica de Privacidade do SF-Sync</h1>
-  <div class="upd">Ultima atualizacao: 9 de junho de 2026</div>
+  <div class="upd">Ultima atualizacao: 10 de junho de 2026</div>
 </div></header>
 
 <div class="wrap"><main>
-  <p class="lead">O SF-Sync e um aplicativo da Silver Fangs que sincroniza pastas entre os computadores do usuario e, quando ele escolhe, com pessoas convidadas. Esta politica explica quais dados tratamos, por que e como os protegemos.</p>
+  <p class="lead">O SF-Sync e um aplicativo da Silver Fangs que mantem pastas sincronizadas entre computadores. Esta politica explica, sem rodeios, o que vemos e o que nao vemos dos seus dados. Existem <b>duas edicoes</b> do aplicativo, e elas tratam dados de formas diferentes; cada uma tem sua secao abaixo.</p>
 
-  <h2>1. Dados que coletamos</h2>
+  <h2>1. Edicao da Microsoft Store (publica)</h2>
+  <p>A edicao distribuida na Microsoft Store funciona <b>sem conta e sem servidor da Silver Fangs</b>. Ela e um programa local que conecta o seu computador a nuvem que <b>voce</b> ja tem (Google Drive, OneDrive, Dropbox, um NAS ou um bucket S3).</p>
+  <p>Sendo direto: <b>nesta edicao, a Silver Fangs nao recebe, nao ve e nao armazena nenhum dado seu.</b> Nao ha cadastro, nao ha telemetria, nao ha analytics, e seus arquivos vao do seu computador direto para a sua nuvem, sem passar por nada nosso.</p>
+  <ul>
+    <li><b>Autorizacao da nuvem:</b> ao conectar Google Drive, OneDrive ou Dropbox, a autorizacao e feita pelo navegador, direto com o provedor, atraves do rclone, o motor de sincronizacao de codigo aberto embutido no app (por isso a tela de consentimento exibe "rclone"). O token de acesso fica <b>somente no seu computador</b>, protegido pelo cofre do Windows (DPAPI).</li>
+    <li><b>Seus arquivos:</b> sao lidos das pastas que voce escolheu e enviados exclusivamente para a sua propria nuvem. Quem pode le-los la e voce e o seu provedor, conforme a politica de privacidade <i>dele</i>.</li>
+    <li><b>Criptografia opcional:</b> se voce ativar, os arquivos sobem cifrados com uma senha que so voce conhece; nem o provedor da nuvem le. Honestidade importante: <b>se voce perder essa senha, nos nao temos como recuperar seus dados cifrados</b>, porque nunca tivemos copia dela.</li>
+    <li><b>O que sai do seu computador:</b> apenas o trafego entre voce e o seu provedor de nuvem. Nada e enviado a Silver Fangs.</li>
+  </ul>
+
+  <h2>2. Edicao por convite (interna)</h2>
+  <p>Existe tambem uma edicao restrita, usada por convite, que tem conta propria e um pequeno servidor de coordenacao da Silver Fangs. Se voce nao recebeu um convite, esta secao nao se aplica a voce. Nela tratamos:</p>
   <ul>
     <li><b>Conta:</b> seu e-mail, nome de exibicao, uma versao protegida (hash) da senha e o segredo da verificacao em duas etapas (2FA).</li>
     <li><b>Dispositivos:</b> um identificador e o nome que voce da a cada computador conectado a sua conta.</li>
-    <li><b>Conteudo sincronizado:</b> os arquivos das pastas que voce escolhe sincronizar. Eles trafegam e ficam <b>criptografados</b> no destino que voce seleciona (R2, NAS ou Google Drive); a Silver Fangs nao le o conteudo dos seus arquivos.</li>
+    <li><b>Conteudo sincronizado:</b> os arquivos das pastas que voce escolhe. Eles trafegam e ficam <b>criptografados</b> no destino; a Silver Fangs nao le o conteudo dos seus arquivos.</li>
     <li><b>Convites:</b> o e-mail de quem voce convida, para liberar o acesso.</li>
   </ul>
+  <p><b>Entrar com Google (so nesta edicao):</b> recebemos do Google apenas a identidade basica dos escopos <code>openid</code>, <code>email</code> e <code>profile</code> (e-mail, nome e foto), usada somente para autenticar voce. Esses escopos <b>nao dao acesso aos seus arquivos do Google Drive</b>. A conexao com o Drive para sincronizar arquivos e separada, autorizada por voce dentro do app.</p>
+  <p>Infraestrutura desta edicao: <b>Cloudflare</b> (hospedagem e banco), <b>Google</b> (login e, se voce ligar, Drive) e <b>Resend</b> (envio de convites por e-mail). Cada um trata os dados apenas para prestar esse servico.</p>
 
-  <h2>2. Entrar com Google</h2>
-  <p>Se voce optar por "Entrar com Google", recebemos do Google apenas as informacoes basicas de identidade dos escopos <code>openid</code>, <code>email</code> e <code>profile</code> (seu e-mail, nome e foto de perfil), usadas <b>somente para autenticar</b> voce e criar/entrar na sua conta. Esses escopos <b>nao dao acesso aos seus arquivos do Google Drive</b>.</p>
-  <p>A conexao opcional com o Google Drive para sincronizar seus proprios arquivos e separada, autorizada por voce dentro do app, e usada exclusivamente para mover os arquivos que voce mesmo escolheu.</p>
-
-  <h2>3. Como usamos os dados</h2>
+  <h2>3. O que vale para as duas edicoes</h2>
   <ul>
-    <li>Operar o servico de sincronizacao e o compartilhamento que voce solicitar.</li>
-    <li>Autenticar voce e proteger sua conta (senha + 2FA).</li>
-    <li>Enviar e-mails operacionais, como convites que voce dispara.</li>
-  </ul>
-  <p>Nao usamos seus dados para publicidade e <b>nao vendemos</b> dados a ninguem.</p>
-
-  <h2>4. Onde guardamos e como protegemos</h2>
-  <ul>
-    <li>Dados de conta ficam na infraestrutura da Cloudflare (banco de dados gerenciado).</li>
-    <li>As chaves de criptografia dos espacos sao guardadas cifradas; o conteudo e envolvido por criptografia antes de ir ao destino.</li>
-    <li>As credenciais de acesso ficam <b>apenas no seu computador</b>, protegidas pelo cofre do proprio Windows.</li>
-    <li>Verificacao em duas etapas (2FA) obrigatoria na conta.</li>
+    <li>Nao usamos seus dados para publicidade e <b>nao vendemos</b> dados a ninguem. Nunca.</li>
+    <li>Nao ha telemetria: o app nao envia estatisticas de uso a Silver Fangs.</li>
+    <li>Credenciais e segredos ficam <b>no seu computador</b>, protegidos pelo cofre do proprio Windows.</li>
+    <li>Pastas sensiveis (segredos e dados internos de controle de versao) sao excluidas da sincronizacao automaticamente.</li>
+    <li>O codigo do SF-Sync e aberto: voce pode conferir tudo isso em vez de confiar na nossa palavra.</li>
   </ul>
 
-  <h2>5. Com quem compartilhamos</h2>
-  <p>Nao compartilhamos seus dados, exceto com os provedores de infraestrutura estritamente necessarios para o servico funcionar: <b>Cloudflare</b> (hospedagem e banco), <b>Google</b> (login e, se voce ligar, Google Drive) e <b>Resend</b> (envio de e-mails). Cada um trata os dados apenas para prestar esse servico.</p>
-
-  <h2>6. Uso limitado (Google API Services)</h2>
+  <h2>4. Uso limitado (Google API Services)</h2>
   <blockquote>O uso, pelo SF-Sync, das informacoes recebidas das APIs do Google obedece a <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>, incluindo os requisitos de Uso Limitado (Limited Use).</blockquote>
 
-  <h2>7. Retencao e exclusao</h2>
-  <p>Voce pode, a qualquer momento, remover um dispositivo da sua conta dentro do app. Para excluir sua conta e os dados associados, basta solicitar pelo contato abaixo; atendemos a remocao em prazo razoavel. O conteudo sincronizado e seu e permanece no destino que voce controla.</p>
+  <h2>5. Retencao e exclusao</h2>
+  <p><b>Edicao da Store:</b> nao guardamos nada seu, entao nao ha o que excluir do nosso lado. Para apagar os dados locais do app, desinstale-o e remova a pasta de dados; os arquivos na sua nuvem continuam seus, sob seu controle.</p>
+  <p><b>Edicao por convite:</b> voce pode remover dispositivos dentro do app a qualquer momento. Para excluir a conta e os dados associados, solicite pelo contato abaixo; atendemos em prazo razoavel.</p>
 
-  <h2>8. Seus direitos</h2>
-  <p>Conforme a legislacao aplicavel (incluindo a LGPD, no Brasil), voce pode solicitar acesso, correcao ou exclusao dos seus dados pessoais, e revogar consentimentos. Use o contato abaixo.</p>
+  <h2>6. Seus direitos</h2>
+  <p>Conforme a legislacao aplicavel (incluindo a LGPD, no Brasil), voce pode solicitar acesso, correcao ou exclusao dos seus dados pessoais, e revogar consentimentos. Use o contato abaixo; respondemos de verdade.</p>
 
-  <h2>9. Alteracoes</h2>
-  <p>Podemos atualizar esta politica. A data de "ultima atualizacao" no topo reflete a versao vigente.</p>
+  <h2>7. Alteracoes</h2>
+  <p>Podemos atualizar esta politica. A data de "ultima atualizacao" no topo reflete a versao vigente, e mudancas relevantes serao escritas com o mesmo compromisso de clareza desta pagina.</p>
 
-  <h2>10. Contato</h2>
+  <h2>8. Contato</h2>
   <p>Duvidas ou solicitacoes sobre privacidade: <a href="mailto:${PRIVACY_CONTACT}">${PRIVACY_CONTACT}</a>.</p>
 </main></div>
 
