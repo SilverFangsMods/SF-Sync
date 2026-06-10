@@ -1,7 +1,7 @@
 # Assina o sf-sync.exe na janela beforeBundle do Tauri.
 $ErrorActionPreference = 'Stop'
 $thumb = $env:SF_SIGN_THUMBPRINT
-if (-not $thumb) { $thumb = '0D3CB1133F15D22115F7D531088A5BB514E9523F' }
+if (-not $thumb) { $thumb = '97132AC52ECF69FA9049F637B2634C20701580AC' }
 
 $exe = Join-Path $PSScriptRoot '..\src-tauri\target\release\sf-sync.exe'
 if (-not (Test-Path $exe)) { Write-Error "exe nao encontrado: $exe"; exit 1 }
