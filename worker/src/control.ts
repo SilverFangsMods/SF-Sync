@@ -77,7 +77,7 @@ export async function register(req: Request, env: ControlEnv): Promise<Response>
   const e = norm(b.email ?? "");
   if (!e.includes("@")) return json({ ok: false, error: "e-mail invalido" }, 400);
   if (!b.password || String(b.password).length < 8) return json({ ok: false, error: "senha minima de 8 caracteres" }, 400);
-  if (await rlBlocked(env, `register:${e}`)) return json({ ok: false, error: "muitas tentativas — espere ~15 min" }, 429);
+  if (await rlBlocked(env, `register:${e}`)) return json({ ok: false, error: "muitas tentativas - espere ~15 min" }, 429);
 
   const exists = await env.CTRL.prepare("SELECT password_hash FROM users WHERE email=?").bind(e).first<UserRow>();
   if (exists?.password_hash) return json({ ok: false, error: "ja cadastrado (faca login)" }, 409);
@@ -166,7 +166,7 @@ export async function googleLogin(req: Request, env: ControlEnv): Promise<Respon
 export async function regenCodes(req: Request, env: ControlEnv): Promise<Response> {
   const b = await req.json<{ email?: string; code?: string }>();
   const e = norm(b.email ?? "");
-  if (await rlBlocked(env, `recover:${e}`)) return json({ ok: false, error: "muitas tentativas — espere ~15 min" }, 429);
+  if (await rlBlocked(env, `recover:${e}`)) return json({ ok: false, error: "muitas tentativas - espere ~15 min" }, 429);
   const u = await env.CTRL.prepare("SELECT totp_secret, totp_enrolled FROM users WHERE email=?").bind(e).first<UserRow>();
   if (!u?.totp_enrolled || !u.totp_secret) return json({ ok: false, error: "sem 2FA ativo" }, 400);
   if (!(await totpVerify(u.totp_secret, String(b.code ?? "")))) {
@@ -185,7 +185,7 @@ export async function regenCodes(req: Request, env: ControlEnv): Promise<Respons
 export async function recover(req: Request, env: ControlEnv): Promise<Response> {
   const b = await req.json<{ email?: string; password?: string; code?: string }>();
   const e = norm(b.email ?? "");
-  if (await rlBlocked(env, `recover:${e}`)) return json({ ok: false, error: "muitas tentativas — espere ~15 min" }, 429);
+  if (await rlBlocked(env, `recover:${e}`)) return json({ ok: false, error: "muitas tentativas - espere ~15 min" }, 429);
   const u = await env.CTRL.prepare("SELECT password_hash FROM users WHERE email=?").bind(e).first<UserRow>();
   if (!u?.password_hash) {
     await rlBump(env, `recover:${e}`);
@@ -211,7 +211,7 @@ export async function recover(req: Request, env: ControlEnv): Promise<Response> 
 export async function login(req: Request, env: ControlEnv): Promise<Response> {
   const b = await req.json<{ email?: string; password?: string; code?: string }>();
   const e = norm(b.email ?? "");
-  if (await rlBlocked(env, `login:${e}`)) return json({ ok: false, error: "muitas tentativas — espere ~15 min" }, 429);
+  if (await rlBlocked(env, `login:${e}`)) return json({ ok: false, error: "muitas tentativas - espere ~15 min" }, 429);
   const u = await env.CTRL.prepare("SELECT name, password_hash, totp_secret, totp_enrolled FROM users WHERE email=?").bind(e).first<UserRow>();
   if (!u?.password_hash) {
     await rlBump(env, `login:${e}`);
@@ -235,7 +235,7 @@ export async function resetPassword(req: Request, env: ControlEnv): Promise<Resp
   const e = norm(b.email ?? "");
   if (!b.password || String(b.password).length < 8) return json({ ok: false, error: "senha minima de 8 caracteres" }, 400);
   const u = await env.CTRL.prepare("SELECT totp_secret, totp_enrolled FROM users WHERE email=?").bind(e).first<UserRow>();
-  if (!u?.totp_enrolled || !u.totp_secret) return json({ ok: false, error: "sem 2FA ativo — reset por TOTP indisponivel" }, 400);
+  if (!u?.totp_enrolled || !u.totp_secret) return json({ ok: false, error: "sem 2FA ativo - reset por TOTP indisponivel" }, 400);
   if (!(await totpVerify(u.totp_secret, String(b.code ?? "")))) return json({ ok: false, error: "codigo do autenticador invalido" }, 401);
   const ph = await hashPassword(String(b.password));
   await env.CTRL.prepare("UPDATE users SET password_hash=? WHERE email=?").bind(ph, e).run();
@@ -290,7 +290,7 @@ export async function claimInviteLink(req: Request, env: ControlEnv, token: stri
   const b = await req.json<{ email?: string }>().catch(() => ({} as any));
   const e = norm(b.email ?? "");
   if (!e.includes("@")) return json({ ok: false, error: "Informe um e-mail valido." }, 400);
-  if (await rlBlocked(env, `join:${token}`)) return json({ ok: false, error: "muitas tentativas — espere ~15 min" }, 429);
+  if (await rlBlocked(env, `join:${token}`)) return json({ ok: false, error: "muitas tentativas - espere ~15 min" }, 429);
   const exists = await env.CTRL.prepare("SELECT 1 FROM users WHERE email=?").bind(e).first();
   if (exists) return json({ ok: true, already: true, email: e });
   let inv = await env.CTRL.prepare("SELECT code FROM invites WHERE email=? AND used=0").bind(e).first<{ code: string }>();

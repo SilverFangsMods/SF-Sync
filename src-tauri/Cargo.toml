@@ -1,7 +1,7 @@
 [package]
 name = "sf-sync"
 version = "0.1.19"
-description = "Sincronizador de pastas multi-inquilino — app de bandeja com rclone bisync e backend serverless."
+description = "Sincronizador de pastas multi-inquilino - app de bandeja com rclone bisync e backend serverless."
 authors = ["Marcelo Maranhas (Silver Fangs)"]
 edition = "2021"
 license = "MIT"

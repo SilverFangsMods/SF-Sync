@@ -2,7 +2,7 @@
   "name": "sf-sync",
   "private": true,
   "version": "0.1.0",
-  "description": "Sincronizador de pastas multi-inquilino — app de bandeja com rclone bisync e backend serverless.",
+  "description": "Sincronizador de pastas multi-inquilino - app de bandeja com rclone bisync e backend serverless.",
   "type": "module",
   "scripts": {
     "dev": "vite",

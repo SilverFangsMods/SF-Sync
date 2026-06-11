@@ -4,15 +4,15 @@ Sincronizador de pastas multi-inquilino: mantém suas pastas iguais em vários
 computadores, de forma automática e criptografada, e permite compartilhar pastas
 com pessoas convidadas.
 
-- **Backup vivo** — suas pastas sempre iguais entre os seus aparelhos.
-- **Trabalho em conjunto** — pastas compartilhadas por convite.
-- **Seguro** — verificação em duas etapas, criptografia em repouso e credenciais
+- **Backup vivo** - suas pastas sempre iguais entre os seus aparelhos.
+- **Trabalho em conjunto** - pastas compartilhadas por convite.
+- **Seguro** - verificação em duas etapas, criptografia em repouso e credenciais
   guardadas apenas no próprio dispositivo.
 
 ## Arquitetura
 
 - **App de desktop (Windows):** Tauri 2 + Rust, residente na bandeja.
-- **Motor de sincronização:** rclone bisync — baixa primeiro, mostra prévia e
+- **Motor de sincronização:** rclone bisync - baixa primeiro, mostra prévia e
   protege contra exclusões em massa.
 - **Destinos:** Cloudflare R2, Google Drive ou NAS/pasta de rede.
 - **Backend serverless:** Cloudflare Worker + D1 + Durable Object + R2.
