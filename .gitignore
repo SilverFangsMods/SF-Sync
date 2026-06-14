@@ -63,3 +63,6 @@ worker/assets_logo.webp
 
 # specs internas de design (nao publicar)
 /docs/SPEC_*.md
+
+# relatorios de certificacao (evidencia interna: screenshots, modelo de aparelho, build do OS)
+docs/cert-report*
